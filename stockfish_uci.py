@@ -2,6 +2,7 @@ import chess.uci
 import chess.pgn
 import numpy as np
 import csv
+import os.path
 
 # Pre-load every white opening
 past_board_scores = {'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1': 10,
@@ -15,7 +16,7 @@ past_board_scores = {'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1
                      'rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1': -10,
                      'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1': 10}
 
-engine = chess.uci.popen_engine("stockfish\\stockfish_10_x64.exe")
+engine = chess.uci.popen_engine("Stockfish\\stockfish_10_x64.exe")
 engine.uci()
 engine.setoption({"Threads": 10, "Hash": 64})
 pgn = open("data\\lichess_db_standard_rated_2013-03.pgn")
@@ -30,19 +31,17 @@ def evaluate_pgn_moves():
     # print(engine.go(movetime=1000))
     # print(info_handler.info['score'][1])
 
-    scores = []
     game_num = 1
     game = chess.pgn.read_game(pgn)
-    csv_fields = ['Event', 'MoveScores']
-    with open(r'lichess_db_standard_rated_2013-03.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(csv_fields)
 
-    while game is not None and game_num < 100000:
+    create_scores_csv()
+
+    while game is not None and game_num < 3:
         board = game.board()
         match_scores = []
         engine.ucinewgame()
         move_number = 0
+        print('Processing game #' + str(game_num))
         for move in game.mainline_moves():
             board.push(move)
 
@@ -52,11 +51,11 @@ def evaluate_pgn_moves():
 
                 # Provide deeper evaluation for earlier moves
                 if move_number < 5:
-                    eval_time = 3000
+                    eval_time = 100
                 elif move_number < 15:
-                    eval_time = 2000
+                    eval_time = 200
                 else:
-                    eval_time = 1000
+                    eval_time = 100
 
                 engine.go(movetime=eval_time, ponder=False)
                 # engine.go(depth=25, ponder=False)
@@ -84,17 +83,14 @@ def evaluate_pgn_moves():
             else:
                 known_score = past_board_scores[board.fen()]
                 match_scores.append(known_score)
-
             move_number += 1
-            print(match_scores)
 
         game = chess.pgn.read_game(pgn)
-        scores.append(match_scores)
-        print(scores)
         with open('lichess_db_standard_rated_2013-03.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             entry = [game_num, str(match_scores).replace(',', '').replace('[', '').replace(']', '')]
             writer.writerow(entry)
+
         export_hash_table()
         game_num += 1
 
@@ -102,13 +98,24 @@ def evaluate_pgn_moves():
 def export_hash_table():
     # Save dict of already processed boards
     np.save('known_scores.npy', past_board_scores)
-    print(past_board_scores)
 
 
 def import_hash_table():
     global past_board_scores
-    past_board_scores = np.load('known_scores.npy').item()
-    print(past_board_scores)
+
+    # Attempt to load already processed boards
+    if os.path.isfile('known_scores.npy'):
+        past_board_scores = np.load('known_scores.npy').item()
+        print(past_board_scores)
+    else:
+        print('No hash table found.')
+
+
+def create_scores_csv():
+    csv_fields = ['Event', 'MoveScores']
+    with open(r'lichess_db_standard_rated_2013-03.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(csv_fields)
 
 
 def main():
