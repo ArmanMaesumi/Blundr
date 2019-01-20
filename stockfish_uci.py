@@ -1,8 +1,10 @@
 import chess.uci
 import chess.pgn
+import chess
 import numpy as np
 import csv
 import os.path
+import argparse, sys
 
 # Pre-load every white opening
 past_board_scores = {'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1': 10,
@@ -16,13 +18,13 @@ past_board_scores = {'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1
                      'rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1': -10,
                      'rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R b KQkq - 1 1': 10}
 
-engine = chess.uci.popen_engine("Stockfish\\stockfish_10_x64.exe")
-engine.uci()
-engine.setoption({"Threads": 10, "Hash": 64})
 pgn = open("data\\lichess_db_standard_rated_2013-03.pgn")
 
 
-def evaluate_pgn_moves():
+def evaluate_pgn_moves(threads, offset, export):
+    engine = chess.uci.popen_engine("Stockfish\\stockfish_10_x64.exe")
+    engine.uci()
+    engine.setoption({"Threads": threads, "Hash": 64})
     info_handler = chess.uci.InfoHandler()
     engine.info_handlers.append(info_handler)
 
@@ -32,11 +34,15 @@ def evaluate_pgn_moves():
     # print(info_handler.info['score'][1])
 
     game_num = 1
+    while game_num < int(offset):
+        chess.pgn.skip_game(pgn)
+        game_num += 1
+
     game = chess.pgn.read_game(pgn)
 
     create_scores_csv()
 
-    while game is not None and game_num < 3:
+    while game is not None and game_num < 50000:
         board = game.board()
         match_scores = []
         engine.ucinewgame()
@@ -51,13 +57,14 @@ def evaluate_pgn_moves():
 
                 # Provide deeper evaluation for earlier moves
                 if move_number < 5:
-                    eval_time = 100
+                    eval_time = 1000
                 elif move_number < 15:
-                    eval_time = 200
+                    eval_time = 500
                 else:
-                    eval_time = 100
+                    eval_time = 500
 
                 engine.go(movetime=eval_time, ponder=False)
+                engine.stop()
                 # engine.go(depth=25, ponder=False)
                 score = info_handler.info['score'][1].cp
                 mate = info_handler.info['score'][1].mate
@@ -106,25 +113,33 @@ def import_hash_table():
     # Attempt to load already processed boards
     if os.path.isfile('known_scores.npy'):
         past_board_scores = np.load('known_scores.npy').item()
-        print(past_board_scores)
     else:
         print('No hash table found.')
 
 
 def create_scores_csv():
-    csv_fields = ['Event', 'MoveScores']
-    with open(r'lichess_db_standard_rated_2013-03.csv', 'a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(csv_fields)
+    if not os.path.isfile('lichess_db_standard_rated_2013-03.csv'):
+        csv_fields = ['Event', 'MoveScores']
+        with open(r'lichess_db_standard_rated_2013-03.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(csv_fields)
 
 
-def main():
+def main(threads, offset, export):
+    if export is None:
+        export = True
+
     import_hash_table()
-    evaluate_pgn_moves()
+    evaluate_pgn_moves(threads, offset, export)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument('--threads', help='Number of compute threads.')
+    parser.add_argument('--offset', help='Skip the first n matches in .pgn file.')
+    parser.add_argument('--export', help='(T/F) export the computed scores.')
 
+    args = parser.parse_args()
 
+    main(args.threads, args.offset, args.export)
