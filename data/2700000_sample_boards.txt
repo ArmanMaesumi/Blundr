@@ -1,0 +1,5 @@
+#LINK TO DICTIONARY
+
+Dictionary contains ~2,700,000 board states represented by FEN strings, along with their Stockfish board evaluations.
+
+https://www.dropbox.com/s/ua1igo9k6qku12m/known_scores.zip?dl=0
