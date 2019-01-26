@@ -4,7 +4,7 @@ import chess
 import numpy as np
 import csv
 import os.path
-import argparse, sys
+import argparse
 
 # This is the hash table of all previously evaluated board states.
 # Pre-load every white opening.
@@ -112,7 +112,7 @@ def evaluate_pgn_moves(threads, offset, export, export_inc):
             export_hash_table()
 
         game_num += 1
-        
+
     export_hash_table()
 
 
@@ -122,13 +122,14 @@ def export_hash_table():
 
 
 def import_hash_table():
-    global past_board_scores
-
+    score_dict = {}
     # Attempt to load already processed boards
     if os.path.isfile('known_scores.npy'):
-        past_board_scores = np.load('known_scores.npy').item()
+        score_dict = np.load('known_scores.npy').item()
     else:
         print('No hash table found.')
+
+    return score_dict
 
 
 def create_scores_csv():
@@ -140,6 +141,8 @@ def create_scores_csv():
 
 
 def main(threads, offset, export, export_inc):
+    global past_board_scores
+
     if export is None:
         export = True
 
@@ -149,7 +152,7 @@ def main(threads, offset, export, export_inc):
     if threads is None:
         threads = 1
 
-    import_hash_table()
+    past_board_scores = import_hash_table()
     evaluate_pgn_moves(threads, offset, export, int(export_inc))
 
 
