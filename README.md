@@ -1,6 +1,6 @@
 # Blundr
 
-Blundr is a chess AI that predicts the centipawn score of a given chess board using machine learning. There is a model for white-to-play, and black-to-play in ```/models```. To train your own model, use ```train.py``` with a pgn file of the training matches, and a csv file with the centipawn evaluations at every move in the games. Sample data for ```50,000``` games and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_uci.py```. This script generates the csv file given the pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
+Blundr is a chess AI that predicts the side advantage of a given chess board using deep learning. The current working model can be found in ```/models```. To train your own model, use ```train.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_uci.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
 
 Example using Blundr.py:
 ```
@@ -8,7 +8,6 @@ Example using Blundr.py:
 Board FEN: 8/P7/1np2R1N/3k2B1/1p1P4/P2P3p/5PPP/6K1 w - - 1 37
 
 [Output]
-[[0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0], [0, 6, 2, 0, 0, 3, 0, 5], [0, 0, 0, 12, 0, 0, 7, 0], [0, 2, 0, 1, 0, 0, 0, 0], [1, 0, 0, 1, 0, 0, 0, 2], [0, 0, 0, 0, 0, 1, 1, 1], [0, 0, 0, 0, 0, 0, 11, 0]]
 . . . . . . . .
 P . . . . . . .
 . n p . . R . N
