@@ -18,3 +18,18 @@ P . . P . . . p
 . . . . . . K .
 Prediction: [[ 0.44967598]]
 White is favored to win.
+```
+
+## Accuracy
+
+Currently, Blundr is trained on ~2,200,000 board states, and has been tested (out of sample) on ~400,000 board states. Across the entire test set, Blundr correctly predicts the side advantage roughly 75-78% of the time. However, when evaluating boards that are in the midgame to lategame, Blundr produces ~85-87% accuracy. This is because early game positions are harder to evaluate, as there is less information to work with (pieces lost, territory, etc).
+
+## Dataset
+
+The 2,700,000 board states provided in ```/data``` were evaluated using Stockfish on a i7-5820K @ 3.30 GHz. If the board was in its first 5 moves, Stockfish was allotted ```1 second``` to evaluate the position. After the 5th move Stockfish was given half a second. ```/data/known_scores.npy``` served as a hash table for all previously evaluated board positions. 
+
+## Future Plans
+
+1. Incorporate a matrix representing which pieces are under attack. 
+2. Implement a CNN.
+3. Predict centipawn score (magnitude of side advantage), rather than just side advantage.
