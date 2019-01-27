@@ -5,18 +5,18 @@ Blundr is a chess AI that predicts the side advantage of a given chess board usi
 Example using Blundr.py:
 ```
 [Input]
-Board FEN: 8/P7/1np2R1N/3k2B1/1p1P4/P2P3p/5PPP/6K1 w - - 1 37
+Board FEN: r1bk3r/bp1pnpp1/3N2q1/p1p1P2p/P6P/2P2Q2/1P3PP1/R1B1KB1R b KQ - 3 16
 
 [Output]
-. . . . . . . .
-P . . . . . . .
-. n p . . R . N
-. . . k . . B .
-. p . P . . . .
-P . . P . . . p
-. . . . . P P P
-. . . . . . K .
-Prediction: [[ 0.44967598]]
+r . b k . . . r
+b p . p n p p .
+. . . N . . q .
+p . p . P . . p
+P . . . . . . P
+. . P . . Q . .
+. P . . . P P .
+R . B . K B . R
+Prediction: [[ 0.91679049]]
 White is favored to win.
 ```
 
