@@ -21,9 +21,13 @@ White is favored to win.
 ```
 ## The Model and Its Performance
 
-Blundr uses two input layers, one which is a one-hot encoded chess board, and the other representing the tiles that are under attack by white/black/both. The input layers feed into two separate deep layers, which are then concetenated and fed through 3 additional deep layers (separated by dropout layers). The final output layer is a single neuron that predicts the probability that white is winning the position.
+Blundr uses two input layers, one which is a one-hot encoded chess board, and the other representing the tiles that are under attack by white/black/both. The input layers feed into two separate deep layers, which are then concatenated and fed through 3 additional deep layers (separated by dropout layers). The final output layer is a single neuron that predicts the probability that white is winning the position.
 
 Currently, Blundr is trained on ~2,400,000 board states, and has been tested (out of sample) on ~200,000 board states. Across the entire test set, Blundr correctly predicts the side advantage roughly 89% of the time. However, when evaluating boards that are in the midgame to lategame, Blundr produces ~92% accuracy. This is because early game positions are harder to evaluate, as there is less information to work with (pieces lost, territory, etc).
+
+### Pre-trained model
+
+The current pre-trained models can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases)
 
 ## Dataset
 
