@@ -1,6 +1,6 @@
 # Blundr
 
-Blundr is a chess AI that predicts the side advantage of a given chess board using deep learning. The current working model can be found in ```/models```. To train your own model, use ```train.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_uci.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
+Blundr is a chess AI that predicts the side advantage of a given chess board using deep learning. The current working model can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases). To train your own model, use ```train.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_uci.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
 
 Example using Blundr.py:
 ```
@@ -19,10 +19,15 @@ R . B . K B . R
 Prediction: [[ 0.91679049]]
 White is favored to win.
 ```
+## The Model and Its Performance
 
-## Accuracy
+Blundr uses two input layers, one which is a one-hot encoded chess board, and the other representing the tiles that are under attack by white/black/both. The input layers feed into two separate deep layers, which are then concatenated and fed through 3 additional deep layers (separated by dropout layers). The final output layer is a single neuron that predicts the probability that white is winning the position.
 
-Currently, Blundr is trained on ~2,200,000 board states, and has been tested (out of sample) on ~400,000 board states. Across the entire test set, Blundr correctly predicts the side advantage roughly 75-78% of the time. However, when evaluating boards that are in the midgame to lategame, Blundr produces ~85-87% accuracy. This is because early game positions are harder to evaluate, as there is less information to work with (pieces lost, territory, etc).
+Currently, Blundr is trained on ~2,400,000 board states, and has been tested (out of sample) on ~200,000 board states. Across the entire test set, Blundr correctly predicts the side advantage roughly 89% of the time. However, when evaluating boards that are in the midgame to lategame, Blundr produces ~92% accuracy. This is because early game positions are harder to evaluate, as there is less information to work with (pieces lost, territory, etc).
+
+### Pre-trained model
+
+The current pre-trained models can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases)
 
 ## Dataset
 
@@ -30,6 +35,4 @@ The 2,700,000 board states provided in ```/data``` were evaluated using Stockfis
 
 ## Future Plans
 
-1. Incorporate a matrix representing which pieces are under attack. 
-2. Implement a CNN.
-3. Predict centipawn score (magnitude of side advantage), rather than just side advantage.
+1. Predict centipawn score (magnitude of side advantage), rather than just side binary advantage.
