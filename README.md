@@ -1,6 +1,6 @@
 # Blundr
 
-Blundr is a chess AI that predicts the side advantage of a given chess board using deep learning. The current working model can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases). To train your own model, use ```train.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_uci.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
+Blundr is a chess AI that predicts the side advantage of a given chess board using deep learning. The current working model can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases). To train/test a model, use ```MLP.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_eval.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
 
 Example using Blundr.py:
 ```
