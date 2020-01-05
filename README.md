@@ -23,7 +23,7 @@ White is favored to win.
 
 Blundr uses two input layers, one which is a one-hot encoded chess board, and the other representing the tiles that are under attack by white/black/both. The input layers feed into two separate deep layers, which are then concatenated and fed through 3 additional deep layers. The final output layer has 3 neurons for each class (white winning, black winning, draw).
 
-Currently, Blundr is trained on ~3,000,000 board states, and has been tested (out of sample) on ~250,000 board states. Across the entire test set, Blundr correctly predicts the side advantage 89% of the time. However, when evaluating boards that have a significant, Blundr produces ~96% accuracy.
+Currently, Blundr is trained on ~3,000,000 board states, and has been tested (out of sample) on ~250,000 board states. Across the entire test set, Blundr correctly predicts the side advantage 89% of the time. However, when evaluating boards that have a substantial advantage, Blundr produces ~96% accuracy.
 
 ### Pre-trained model
 
