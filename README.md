@@ -1,6 +1,6 @@
 # Blundr
 
-Blundr is a deep neural network that predicts the side advantage of a given chess board. The current working model can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases). To train/test a model, use ```MLP.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. To create your own training data, use ```stockfish_eval.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
+Blundr is a deep neural network that predicts the side advantage of a given chess board. The current working model can be found in [releases](https://github.com/ArmanMaesumi/Blundr/releases). To train/test a model, use ```MLP.py``` with a .npy dictionary file of type ```{'FEN':CP score}```. Sample data for ```2,700,000``` board states, and their evaluations are provided in ```/data```. Please send me an email If you'd like to use the full dataset of ~```20,000,000``` board states. To create your own training data, use ```stockfish_eval.py```. This script generates the ```.npy``` dictionary file given a pgn. To interface with the trained models and make predictions, use Blundr.py. The Blundr scripts accepts a chess FEN string as a board input.
 
 Example using Blundr.py:
 ```
@@ -32,7 +32,3 @@ The current pre-trained models can be found in [releases](https://github.com/Arm
 ## Dataset
 
 The 2,700,000 board states provided in ```/data``` were evaluated using Stockfish on a i7-5820K @ 3.30 GHz. If the board was in its first 5 moves, Stockfish was allotted ```1 second``` to evaluate the position. After the 5th move Stockfish was given half a second. ```/data/known_scores.npy``` served as a hash table for all previously evaluated board positions. 
-
-## Future Plans
-
-1. Predict centipawn score (magnitude of side advantage), rather than just side binary advantage.
